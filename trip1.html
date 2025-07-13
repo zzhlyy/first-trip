@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我们的第一场旅行 - 四姑娘山</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f3f3;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('h1.jpeg');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .header p {
+            font-size: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        .content {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+        
+        .memory-section {
+            margin-bottom: 50px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        h2 {
+            color: #e74c3c;
+            border-bottom: 2px solid #e74c3c;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 比例 */
+            height: 0;
+            overflow: hidden;
+            margin: 30px 0;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .gallery img {
+            width: 100%;
+            height: auto; /* 改为auto以保持原比例 */
+            max-height: 400px; /* 设置最大高度防止过大 */
+            object-fit: contain; /* 保持完整图片显示 */
+            border-radius: 8px;
+            transition: transform 0.3s;
+            cursor: pointer;
+            border: 1px solid #eee; /* 添加边框使图片更清晰 */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .gallery img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            overflow: auto;
+        }
+        
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90vh;
+            width: auto;
+            height: auto;
+            margin-top: 5vh;
+        }
+        
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 30px;
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .heart {
+            color: #ff6b81;
+            font-size: 1.2em;
+            animation: heartbeat 1.5s infinite;
+        }
+        
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .header p {
+                font-size: 1.2rem;
+                padding: 0 20px;
+            }
+            
+            .content {
+                margin: 30px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 音乐播放器 (自动播放但隐藏) -->
+    <audio id="bgMusic" autoplay loop>
+        <source src="music.mp3" type="audio/mpeg">
+        <!-- 将音乐文件放在music文件夹中 -->
+        您的浏览器不支持音频元素。
+    </audio>
+    
+    <!-- 头部横幅 -->
+    <div class="header">
+        <h1>我们的第一场旅行</h1>
+        <p>四姑娘山 · 2024</p>
+        <p>这是我们共同旅程的开始，以后会一起走更多更多的路...</p>
+    </div>
+    
+    <!-- 主要内容 -->
+    <div class="content">
+        <div class="memory-section">
+            <h2>四姑娘山的回忆</h2>
+            <p>来自黎傻鱼剪的视频</p>
+            
+            <!-- 视频部分 -->
+            <div class="video-container">
+                <iframe src="video.mp4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <!-- 请替换为你的旅行视频链接 -->
+            </div>
+            
+        </div>
+        
+        <div class="memory-section">
+            <h2>旅行瞬间</h2>
+            
+            <p>因为你的高反很严重，所以再往上的风景，我给你带下来了。</p>
+
+            <!-- 图片画廊 -->
+            <div class="gallery">
+                <img src="p1.jpeg" alt="半夜开爬！" onclick="openModal(this)">
+                <img src="p2.jpeg" alt="山顶的风景" onclick="openModal(this)">
+                <img src="p3.jpeg" alt="地图" onclick="openModal(this)">
+                <img src="p4.jpeg" alt="日照金山" onclick="openModal(this)">
+                <img src="p6.jpeg" alt="小伙伴" onclick="openModal(this)">
+                <img src="p7.jpeg" alt="下山约饭" onclick="openModal(this)">
+            </div>
+            
+        </div>
+        
+        <div class="memory-section">
+
+            <p style="text-align: center; font-size: 1.2em; margin-top: 30px;">
+                我们的故事，才刚刚开始 <span class="heart">❤</span>
+            </p>
+        </div>
+    </div>
+    
+    <!-- 图片放大模态框 -->
+    <div id="imageModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+    
+    <!-- 页脚 -->
+    <div class="footer">
+        <p>纪念我们的第一场旅行 · 四姑娘山 · 2024</p>
+        <p>Created with love for you</p>
+    </div>
+    
+    <script>
+        // 自动播放音乐 (需要用户交互后才能播放，所以添加点击事件)
+        document.addEventListener('click', function() {
+            var audio = document.getElementById('bgMusic');
+            audio.play().catch(e => console.log("自动播放被阻止，请手动播放"));
+        }, { once: true });
+        
+        // 图片放大功能
+        var modal = document.getElementById("imageModal");
+        var modalImg = document.getElementById("modalImage");
+        
+        function openModal(img) {
+            modal.style.display = "block";
+            modalImg.src = img.src;
+        }
+        
+        function closeModal() {
+            modal.style.display = "none";
+        }
+        
+        // 点击模态框外部关闭
+        modal.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>

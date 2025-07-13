@@ -15,12 +15,16 @@
         }
         
         .header {
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('h1.jpeg');
+            background: 
+                linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+                url('h1.jpeg');
             background-size: cover;
             background-position: center center;
-            background-attachment: scroll;
-            height: 100vh;
-            min-height: 500px;
+            background-repeat: no-repeat;
+            width: 100%;
+            aspect-ratio: 9/16;
+            min-height: 300px;
+            max-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -29,6 +33,15 @@
             color: white;
             padding: 20px;
             box-sizing: border-box;
+            object-fit: cover;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
         }
         
         .header h1 {
@@ -158,32 +171,26 @@
             animation: heartbeat 1.5s infinite;
         }
 
-        /* 音乐播放器样式 */
-        .music-player {
+        /* 音乐提示样式 */
+        .music-prompt {
             position: fixed;
             bottom: 20px;
-            right: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(231, 76, 60, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
             z-index: 1000;
-            background: rgba(255,255,255,0.9);
-            border-radius: 10px;
-            padding: 10px;
-            box-shadow: 0 2px 15px rgba(231, 76, 60, 0.3);
-            transition: all 0.3s;
             backdrop-filter: blur(5px);
-            border: 1px solid rgba(231, 76, 60, 0.2);
+            animation: pulse 2s infinite;
         }
         
-        .music-player:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 20px rgba(231, 76, 60, 0.4);
-        }
-        
-        .music-tip {
-            font-size: 12px;
-            color: #e74c3c;
-            text-align: center;
-            margin-top: 5px;
-            font-weight: bold;
+        @keyframes pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
         }
 
         @keyframes heartbeat {
@@ -197,12 +204,9 @@
         /* 响应式设计 */
         @media (max-width: 768px) {
             .header {
-                background-size: contain;
-                background-repeat: no-repeat;
-                background-color: #000;
+                aspect-ratio: 9/16;
                 height: auto;
-                aspect-ratio: 16/9;
-                padding-top: 60%;
+                max-height: 80vh;
             }
             
             .header h1 {
@@ -218,15 +222,10 @@
                 margin: 30px auto;
             }
             
-            .music-player {
-                width: 90%;
-                left: 5%;
-                right: auto;
+            .music-prompt {
+                width: 80%;
+                text-align: center;
                 bottom: 10px;
-            }
-            
-            .music-player iframe {
-                width: 100% !important;
             }
         }
     </style>
@@ -234,8 +233,11 @@
 <body>
     <!-- 头部横幅 -->
     <div class="header">
-        <h1>我们的第一场旅行</h1>
-        <p>四姑娘山 · 2024</p>
+        <div class="header-content">
+            <h1>我们的第一场旅行</h1>
+            <p>四姑娘山 · 2024</p>
+            <p>这是我们共同旅程的开始，以后会一起走更多更多的路...</p>
+        </div>
     </div>
     
     <!-- 主要内容 -->
@@ -244,7 +246,7 @@
             <h2>四姑娘山的回忆</h2>
             <p>来自黎傻鱼剪的视频</p>
             
-            <!-- 视频部分 -->
+            <!-- 你原有的视频容器 -->
             <div class="video-container">
                 <iframe src="video.mp4" frameborder="0" allowfullscreen></iframe>
             </div>
@@ -278,25 +280,15 @@
         <img class="modal-content" id="modalImage">
     </div>
     
-    <!-- 网易云音乐播放器 -->
-    <div class="music-player">
-        <iframe 
-            frameborder="no" 
-            border="0" 
-            marginwidth="0" 
-            marginheight="0"
-            width="280" 
-            height="86"
-            src="https://music.163.com/outchain/player?type=2&id=1934233831&auto=0&height=66&theme=#e74c3c">
-        </iframe>
-        <div class="music-tip">点击页面任意处播放音乐</div>
-    </div>
-    
     <!-- 页脚 -->
     <div class="footer">
         <p>纪念我们的第一场旅行 · 四姑娘山 · 2024</p>
         <p>Created with love for you</p>
     </div>
+    
+    <!-- YouTube纯音频背景音乐 -->
+    <div id="youtubeAudio" style="display:none"></div>
+    <div class="music-prompt" id="musicPrompt">点击任意处开启背景音乐</div>
     
     <script>
         // 图片放大功能
@@ -306,10 +298,12 @@
         function openModal(img) {
             modal.style.display = "block";
             modalImg.src = img.src;
+            document.body.style.overflow = "hidden";
         }
         
         function closeModal() {
             modal.style.display = "none";
+            document.body.style.overflow = "auto";
         }
         
         // 点击模态框外部关闭
@@ -319,15 +313,51 @@
             }
         }
 
-        // 音乐播放控制
+        // YouTube背景音乐控制
+        let player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtubeAudio', {
+                videoId: 'Km1AUdj7Pv0',
+                playerVars: {
+                    autoplay: 1,
+                    loop: 1,
+                    playlist: 'Km1AUdj7Pv0',
+                    controls: 0,
+                    disablekb: 1,
+                    fs: 0,
+                    modestbranding: 1,
+                    rel: 0
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            // 初始设置为静音
+            event.target.mute();
+            event.target.playVideo();
+        }
+
+        function onPlayerStateChange(event) {
+            // 音乐状态变化时的处理
+        }
+
+        // 用户交互后取消静音
         document.addEventListener('click', function() {
-            const iframe = document.querySelector('.music-player iframe');
-            iframe.src = iframe.src.replace('auto=0', 'auto=1');
-            document.querySelector('.music-tip').style.opacity = '0';
-            setTimeout(() => {
-                document.querySelector('.music-tip').style.display = 'none';
-            }, 500);
+            if (player) {
+                player.unMute();
+                document.getElementById('musicPrompt').style.display = 'none';
+            }
         }, { once: true });
+
+        // 动态加载YouTube API
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
         // 键盘ESC关闭图片预览
         document.addEventListener('keydown', function(event) {

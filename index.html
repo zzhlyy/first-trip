@@ -18,16 +18,16 @@
             background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('h1.jpeg');
             background-size: cover;
             background-position: center center;
-            background-attachment: scroll; /* 移除fixed改为scroll */
+            background-attachment: scroll;
             height: 100vh;
-            min-height: 500px; /* 设置最小高度 */
+            min-height: 500px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
             color: white;
-            padding: 20px; /* 添加内边距 */
+            padding: 20px;
             box-sizing: border-box;
         }
         
@@ -67,7 +67,7 @@
         
         .video-container {
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 比例 */
+            padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
             margin: 30px 0;
@@ -93,13 +93,13 @@
         
         .gallery img {
             width: 100%;
-            height: auto; /* 改为auto以保持原比例 */
-            max-height: 400px; /* 设置最大高度防止过大 */
-            object-fit: contain; /* 保持完整图片显示 */
+            height: auto;
+            max-height: 400px;
+            object-fit: contain;
             border-radius: 8px;
             transition: transform 0.3s;
             cursor: pointer;
-            border: 1px solid #eee; /* 添加边框使图片更清晰 */
+            border: 1px solid #eee;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
@@ -138,6 +138,11 @@
             font-size: 40px;
             font-weight: bold;
             cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .close:hover {
+            color: #e74c3c;
         }
         
         .footer {
@@ -152,7 +157,35 @@
             font-size: 1.2em;
             animation: heartbeat 1.5s infinite;
         }
+
+        /* 音乐播放器样式 */
+        .music-player {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(255,255,255,0.9);
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 2px 15px rgba(231, 76, 60, 0.3);
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(231, 76, 60, 0.2);
+        }
         
+        .music-player:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(231, 76, 60, 0.4);
+        }
+        
+        .music-tip {
+            font-size: 12px;
+            color: #e74c3c;
+            text-align: center;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
         @keyframes heartbeat {
             0% { transform: scale(1); }
             25% { transform: scale(1.1); }
@@ -161,41 +194,48 @@
             100% { transform: scale(1); }
         }
         
-        /* 手机端特别调整 */
+        /* 响应式设计 */
         @media (max-width: 768px) {
             .header {
-                background-size: contain; /* 改为contain确保完整显示图片 */
+                background-size: contain;
                 background-repeat: no-repeat;
-                background-color: #000; /* 添加背景色填充空白 */
+                background-color: #000;
                 height: auto;
-                aspect-ratio: 16/9; /* 根据图片比例调整 */
-                padding-top: 60%; /* 根据图片比例调整 */
+                aspect-ratio: 16/9;
+                padding-top: 60%;
             }
             
             .header h1 {
                 font-size: 2rem;
-                margin-top: auto; /* 文字下移 */
+                margin-top: auto;
             }
             
             .header p {
                 font-size: 1rem;
             }
+            
+            .content {
+                margin: 30px auto;
+            }
+            
+            .music-player {
+                width: 90%;
+                left: 5%;
+                right: auto;
+                bottom: 10px;
+            }
+            
+            .music-player iframe {
+                width: 100% !important;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- 音乐播放器 (自动播放但隐藏) -->
-    <audio id="bgMusic" autoplay loop>
-        <source src="music.mp3" type="audio/mpeg">
-        <!-- 将音乐文件放在music文件夹中 -->
-        您的浏览器不支持音频元素。
-    </audio>
-    
     <!-- 头部横幅 -->
     <div class="header">
         <h1>我们的第一场旅行</h1>
         <p>四姑娘山 · 2024</p>
-        <p>这是我们共同旅程的开始，以后会一起走更多更多的路...</p>
     </div>
     
     <!-- 主要内容 -->
@@ -206,15 +246,12 @@
             
             <!-- 视频部分 -->
             <div class="video-container">
-                <iframe src="video.mp4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                <!-- 请替换为你的旅行视频链接 -->
+                <iframe src="video.mp4" frameborder="0" allowfullscreen></iframe>
             </div>
-            
         </div>
         
         <div class="memory-section">
             <h2>旅行瞬间</h2>
-            
             <p>因为你的高反很严重，所以再往上的风景，我给你带下来了。</p>
 
             <!-- 图片画廊 -->
@@ -226,11 +263,9 @@
                 <img src="p6.jpeg" alt="小伙伴" onclick="openModal(this)">
                 <img src="p7.jpeg" alt="下山约饭" onclick="openModal(this)">
             </div>
-            
         </div>
         
         <div class="memory-section">
-
             <p style="text-align: center; font-size: 1.2em; margin-top: 30px;">
                 我们的故事，才刚刚开始 <span class="heart">❤</span>
             </p>
@@ -243,6 +278,20 @@
         <img class="modal-content" id="modalImage">
     </div>
     
+    <!-- 网易云音乐播放器 -->
+    <div class="music-player">
+        <iframe 
+            frameborder="no" 
+            border="0" 
+            marginwidth="0" 
+            marginheight="0"
+            width="280" 
+            height="86"
+            src="https://music.163.com/outchain/player?type=2&id=1934233831&auto=0&height=66&theme=#e74c3c">
+        </iframe>
+        <div class="music-tip">点击页面任意处播放音乐</div>
+    </div>
+    
     <!-- 页脚 -->
     <div class="footer">
         <p>纪念我们的第一场旅行 · 四姑娘山 · 2024</p>
@@ -250,12 +299,6 @@
     </div>
     
     <script>
-        // 自动播放音乐 (需要用户交互后才能播放，所以添加点击事件)
-        document.addEventListener('click', function() {
-            var audio = document.getElementById('bgMusic');
-            audio.play().catch(e => console.log("自动播放被阻止，请手动播放"));
-        }, { once: true });
-        
         // 图片放大功能
         var modal = document.getElementById("imageModal");
         var modalImg = document.getElementById("modalImage");
@@ -275,6 +318,23 @@
                 closeModal();
             }
         }
+
+        // 音乐播放控制
+        document.addEventListener('click', function() {
+            const iframe = document.querySelector('.music-player iframe');
+            iframe.src = iframe.src.replace('auto=0', 'auto=1');
+            document.querySelector('.music-tip').style.opacity = '0';
+            setTimeout(() => {
+                document.querySelector('.music-tip').style.display = 'none';
+            }, 500);
+        }, { once: true });
+
+        // 键盘ESC关闭图片预览
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                closeModal();
+            }
+        });
     </script>
 </body>
 </html>

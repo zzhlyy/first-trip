@@ -14,17 +14,16 @@
             line-height: 1.6;
         }
         
+        /* 修改为16:9比例的头部背景 */
         .header {
             background: 
                 linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
                 url('h1.jpeg');
             background-size: cover;
             background-position: center center;
-            background-repeat: no-repeat;
             width: 100%;
-            aspect-ratio: 9/16;
+            aspect-ratio: 16/9; /* 关键修改：16:9比例 */
             min-height: 300px;
-            max-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -33,15 +32,12 @@
             color: white;
             padding: 20px;
             box-sizing: border-box;
-            object-fit: cover;
-            overflow: hidden;
             position: relative;
         }
         
         .header-content {
             position: relative;
             z-index: 2;
-            width: 100%;
         }
         
         .header h1 {
@@ -204,14 +200,12 @@
         /* 响应式设计 */
         @media (max-width: 768px) {
             .header {
-                aspect-ratio: 9/16;
+                aspect-ratio: 16/9; /* 保持16:9 */
                 height: auto;
-                max-height: 80vh;
             }
             
             .header h1 {
                 font-size: 2rem;
-                margin-top: auto;
             }
             
             .header p {
@@ -246,7 +240,7 @@
             <h2>四姑娘山的回忆</h2>
             <p>来自黎傻鱼剪的视频</p>
             
-            <!-- 你原有的视频容器 -->
+            <!-- 您原有的视频容器（不会自动播放） -->
             <div class="video-container">
                 <iframe src="video.mp4" frameborder="0" allowfullscreen></iframe>
             </div>
@@ -286,7 +280,7 @@
         <p>Created with love for you</p>
     </div>
     
-    <!-- YouTube纯音频背景音乐 -->
+    <!-- YouTube背景音乐播放器（隐藏） -->
     <div id="youtubeAudio" style="display:none"></div>
     <div class="music-prompt" id="musicPrompt">点击任意处开启背景音乐</div>
     
@@ -306,11 +300,8 @@
             document.body.style.overflow = "auto";
         }
         
-        // 点击模态框外部关闭
         modal.onclick = function(event) {
-            if (event.target == modal) {
-                closeModal();
-            }
+            if (event.target == modal) closeModal();
         }
 
         // YouTube背景音乐控制
@@ -319,51 +310,38 @@
             player = new YT.Player('youtubeAudio', {
                 videoId: 'Km1AUdj7Pv0',
                 playerVars: {
-                    autoplay: 1,
-                    loop: 1,
-                    playlist: 'Km1AUdj7Pv0',
-                    controls: 0,
-                    disablekb: 1,
-                    fs: 0,
+                    autoplay: 1,  // 自动加载音频
+                    loop: 1,      // 循环播放
+                    playlist: 'Km1AUdj7Pv0', // 实现无缝循环
+                    controls: 0,  // 不显示控制条
+                    disablekb: 1,  // 禁用键盘控制
+                    fs: 0,        // 隐藏全屏按钮
                     modestbranding: 1,
                     rel: 0
                 },
                 events: {
-                    'onReady': onPlayerReady,
-                    'onStateChange': onPlayerStateChange
+                    'onReady': function(event) {
+                        event.target.mute(); // 初始静音
+                        event.target.playVideo();
+                        // 用户交互后取消静音
+                        document.addEventListener('click', function() {
+                            event.target.unMute();
+                            document.getElementById('musicPrompt').style.display = 'none';
+                        }, { once: true });
+                    }
                 }
             });
         }
 
-        function onPlayerReady(event) {
-            // 初始设置为静音
-            event.target.mute();
-            event.target.playVideo();
-        }
-
-        function onPlayerStateChange(event) {
-            // 音乐状态变化时的处理
-        }
-
-        // 用户交互后取消静音
-        document.addEventListener('click', function() {
-            if (player) {
-                player.unMute();
-                document.getElementById('musicPrompt').style.display = 'none';
-            }
-        }, { once: true });
-
-        // 动态加载YouTube API
+        // 加载YouTube API
         const tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         const firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-        // 键盘ESC关闭图片预览
-        document.addEventListener('keydown', function(event) {
-            if (event.key === "Escape") {
-                closeModal();
-            }
+        // ESC键关闭图片预览
+        document.addEventListener('keydown', function(e) {
+            if (e.key === "Escape") closeModal();
         });
     </script>
 </body>

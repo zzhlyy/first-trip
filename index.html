@@ -17,14 +17,18 @@
         .header {
             background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('h1.jpeg');
             background-size: cover;
-            background-position: center;
+            background-position: center center;
+            background-attachment: scroll; /* 移除fixed改为scroll */
             height: 100vh;
+            min-height: 500px; /* 设置最小高度 */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
             color: white;
+            padding: 20px; /* 添加内边距 */
+            box-sizing: border-box;
         }
         
         .header h1 {
@@ -157,19 +161,24 @@
             100% { transform: scale(1); }
         }
         
-        /* 响应式设计 */
+        /* 手机端特别调整 */
         @media (max-width: 768px) {
+            .header {
+                background-size: contain; /* 改为contain确保完整显示图片 */
+                background-repeat: no-repeat;
+                background-color: #000; /* 添加背景色填充空白 */
+                height: auto;
+                aspect-ratio: 16/9; /* 根据图片比例调整 */
+                padding-top: 60%; /* 根据图片比例调整 */
+            }
+            
             .header h1 {
-                font-size: 2.5rem;
+                font-size: 2rem;
+                margin-top: auto; /* 文字下移 */
             }
             
             .header p {
-                font-size: 1.2rem;
-                padding: 0 20px;
-            }
-            
-            .content {
-                margin: 30px auto;
+                font-size: 1rem;
             }
         }
     </style>
